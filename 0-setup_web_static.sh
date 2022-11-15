@@ -1,38 +1,26 @@
 #!/usr/bin/env bash
-# Sets up a web server for deployment of web_static.
-
-apt-get update
-apt-get install -y nginx
-
-mkdir -p /data/web_static/releases/test/
-mkdir -p /data/web_static/shared/
-echo "Holberton School" > /data/web_static/releases/test/index.html
-ln -sf /data/web_static/releases/test/ /data/web_static/current
-
-chown -R ubuntu /data/
-chgrp -R ubuntu /data/
-
-printf %s "server {
-    listen 80 default_server;
-    listen [::]:80 default_server;
-    add_header X-Served-By $HOSTNAME;
-    root   /var/www/html;
-    index  index.html index.htm;
-
-    location /hbnb_static {
-        alias /data/web_static/current;
-        index index.html index.htm;
-    }
-
-    location /redirect_me {
-        return 301 http://cuberule.com/;
-    }
-
-    error_page 404 /404.html;
-    location /404 {
-      root /var/www/html;
-      internal;
-    }
-}" > /etc/nginx/sites-available/default
-
-service nginx restart
+# sets up the web servers for the deployment of web_static
+name="nginx"
+dpkg -s $name &> /dev/null
+if [ $? -ne 0 ]
+then
+    sudo apt-get update
+    sudo apt-get install $name
+fi
+FOLDER=("/data" "/data/web_static" "/data/web_static/releases"
+"/data/web_static/shared" "/data/web_static/releases/test")
+for val in ${FOLDER[@]};
+do
+    if [ ! -d $val ]
+    then
+        sudo mkdir $val
+    fi
+done
+file="/data/web_static/releases/test/index.html"
+source="/data/web_static/releases/test/"
+symbollink="/data/web_static/current"
+sudo echo "This is a test" | sudo tee $file
+sudo ln -sf $source $symbollink
+sudo chown -hR ubuntu:ubuntu /data
+sudo sed -i '38i\\tlocation /hbnb_static/ {\n\t\talias /data/web_static/current/;\n\t}\n' /etc/nginx/sites-available/default
+sudo nginx -s reload
