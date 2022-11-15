@@ -9,18 +9,17 @@ env.hosts = ["52.91.125.60", "54.162.77.132"]
 
 
 def do_pack():
-    """
-        genereate a trz archive
-    """
+    """generates a tgz archive"""
     try:
         date = datetime.now().strftime("%Y%m%d%H%M%S")
         if isdir("versions") is False:
             local("mkdir versions")
-        fileName = "versions/web_static_{}".format(date)
-        local("tar -cvzf {} abc".format(fileName))
-        return fileName
-    except:
+        file_name = "versions/web_static_{}.tgz".format(date)
+        local("tar -cvzf {} web_static".format(file_name))
+        return file_name
+    except Exception as e:
         return None
+
 
 def deploy():
     """creates and distributes an archive to the web servers"""
@@ -28,6 +27,7 @@ def deploy():
     if archive_path is None:
         return False
     return do_deploy(archive_path)
+
 
 def do_deploy(archive_path):
     """
@@ -51,4 +51,3 @@ def do_deploy(archive_path):
         return True
     except Exception as e:
         return False
- 

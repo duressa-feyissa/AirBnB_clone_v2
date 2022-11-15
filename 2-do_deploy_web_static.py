@@ -1,16 +1,18 @@
 #!/usr/bin/python3
 """
-    Fabric
+Fabric script that generates a tgz archive from the contents of the web_static
+folder of the AirBnB Clone repo
 """
-from fabric.api import *
+
 from datetime import datetime
+from fabric.api import local
 from os.path import isdir
 env.hosts = ["52.91.125.60", "54.162.77.132"]
 
 
 def do_deploy(archive_path):
     """
-    Using the new path of the new archive
+        Using the new path of the new archive
     """
     if archive_path is None:
         return False
@@ -30,4 +32,3 @@ def do_deploy(archive_path):
         return True
     except Exception as e:
         return False
-
