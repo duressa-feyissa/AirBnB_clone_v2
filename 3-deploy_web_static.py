@@ -37,7 +37,7 @@ def do_deploy(archive_path):
     if archive_path is None:
         return False
     try:
-        fileNo = archive_path.split('/').[-1]
+        fileNo = archive_path.split('/')[-1]
         no_ext = fileNo.split(".")[0]
         path = "/data/web_static/releases/"
         sybol_link = "/data/web_static/current"

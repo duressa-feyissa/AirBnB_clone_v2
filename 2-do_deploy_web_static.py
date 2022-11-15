@@ -6,30 +6,27 @@ folder of the AirBnB Clone repo
 
 from datetime import datetime
 from fabric.api import *
-from os.path import isdir
+from os.path import isdir, exists
 from fabric.api import env
 env.hosts = ["52.91.125.60", "54.162.77.132"]
 
 
 def do_deploy(archive_path):
-    """
-        Using the new path of the new archive
-    """
-    if archive_path is None:
+    """distributes an archive to the web servers"""
+    if exists(archive_path) is False:
         return False
     try:
-        fileNo = archive_path.split('/').[-1]
-        no_ext = fileNo.split(".")[0]
+        file_n = archive_path.split("/")[-1]
+        no_ext = file_n.split(".")[0]
         path = "/data/web_static/releases/"
-        sybol_link = "/data/web_static/current"
-        put(archive_path, "/tmp/")
-        run("mkdir -p {}{}/".format(path, no_ext))
-        run("tar -xzf /tmp/{} -C {}{}/".format(fileNo, path, no_ext))
-        run("rm /tmp/{}".format(fileNo))
-        run("mv {0}{1}/web_static/* {0}{1}/".format(path, fileNo))
-        run("rm -rf {}/web_static".format(path))
-        run("rm -rf {}".format(sybol_link))
-        run("ln -s {} {}".format(path, sybol_link))
+        put(archive_path, '/tmp/')
+        run('mkdir -p {}{}/'.format(path, no_ext))
+        run('tar -xzf /tmp/{} -C {}{}/'.format(file_n, path, no_ext))
+        run('rm /tmp/{}'.format(file_n))
+        run('mv {0}{1}/web_static/* {0}{1}/'.format(path, no_ext))
+        run('rm -rf {}{}/web_static'.format(path, no_ext))
+        run('rm -rf /data/web_static/current')
+        run('ln -s {}{}/ /data/web_static/current'.format(path, no_ext))
         return True
     except Exception as e:
         return False
