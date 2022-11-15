@@ -4,7 +4,7 @@
 """
 from fabric.api import *
 from datetime import datetime
-from os.path import isdir
+from os.path import isdir, exists
 from fabric.api import env
 env.hosts = ["52.91.125.60", "54.162.77.132"]
 
